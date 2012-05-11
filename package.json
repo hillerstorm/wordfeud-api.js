@@ -1,6 +1,6 @@
 {
   "author": "Johan Hillerström <progr@mmer.nu> (https://github.com/hillerstorm)",
-  "name": "wordfeud-api.js",
+  "name": "wordfeud-api",
   "description": "A package for communicating with the Wordfeud-servers",
   "version": "0.0.0",
   "homepage": "https://github.com/hillerstorm/wordfeud-api.js",
