@@ -167,6 +167,48 @@ function isEmail (str) {
     return str.match(/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/);
 }
 
+function loginWithId (id, password, sessionId, onComplete) {
+    var content;
+
+    if (!onComplete) {
+        return;
+    }
+
+    if (!id) {
+        process.nextTick(function () {
+            onComplete('No id given');
+        });
+        return;
+    }
+    if (!password) {
+        process.nextTick(function () {
+            onComplete('No password given');
+        });
+        return;
+    }
+
+    content = {
+        id: id,
+        password: getHashedPassword(password)
+    };
+
+    execute('user/login/id/', content, sessionId, function (err, response, result) {
+        if (err) {
+            onComplete(err);
+            return;
+        }
+
+        onComplete(null, {
+            sessionId: extractSessionId(response),
+            user: {
+                id: result.content.id,
+                username: result.content.username,
+                email: result.content.email
+            }
+        });
+    });
+}
+
 module.exports = {
     getGames: function (sessionId, onComplete) {
         simpleGet('user/games/', null, sessionId, 'games', onComplete);
@@ -273,47 +315,7 @@ module.exports = {
             });
         });
     },
-    loginWithId: function (id, password, sessionId, onComplete) {
-        var content;
-
-        if (!onComplete) {
-            return;
-        }
-
-        if (!id) {
-            process.nextTick(function () {
-                onComplete('No id given');
-            });
-            return;
-        }
-        if (!password) {
-            process.nextTick(function () {
-                onComplete('No password given');
-            });
-            return;
-        }
-
-        content = {
-            id: id,
-            password: getHashedPassword(password)
-        };
-
-        execute('user/login/id/', content, sessionId, function (err, response, result) {
-            if (err) {
-                onComplete(err);
-                return;
-            }
-
-            onComplete(null, {
-                sessionId: extractSessionId(response),
-                user: {
-                    id: result.content.id,
-                    username: result.content.username,
-                    email: result.content.email
-                }
-            });
-        });
-    },
+    loginWithId: loginWithId,
     login: function (user, password, onComplete) {
         var content, ext;
 
@@ -352,7 +354,7 @@ module.exports = {
                 return;
             }
 
-            loginWithId(id, password, sessionId, onComplete);
+            loginWithId(result.content.id, password, sessionId, onComplete);
         });
     }
 };
