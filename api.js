@@ -314,7 +314,7 @@ module.exports = {
             });
         });
     },
-    login: function (user, password, content, onComplete) {
+    login: function (user, password, onComplete) {
         var content, ext;
 
         if (!onComplete) {
