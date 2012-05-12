@@ -117,12 +117,19 @@ function simpleGet (path, content, sessionId, propertyPath, onComplete) {
     }
 
     execute(path, content, sessionId, function (err, response, result) {
+        var obj;
+
         if (err) {
             onComplete(err);
             return;
         }
 
-        onComplete(null, result.content[propertyPath]);
+        if (propertyPath) {
+            obj = result.content[propertyPath];
+        } else {
+            obj = result.content;
+        }
+        onComplete(null, obj);
     });
 }
 
@@ -233,6 +240,9 @@ module.exports = {
     getNotifications: function (sessionId, onComplete) {
         simpleGet('user/notifications/', null, sessionId, 'entries', onComplete);
     },
+    getStatus: function (sessionId, onComplete) {
+        simpleGet('user/status/', null, sessionId, null, onComplete);
+    },
     move: function (gameId, rulesetId, move, words, socketId) {
         var content = {
             move: move,
@@ -262,6 +272,31 @@ module.exports = {
                     game: game
                 });
             });
+        });
+    },
+    swap: function (gameId, tiles, sessionId, onComplete) {
+        execute('game/' + gameId + '/swap/', { tiles: tiles }, sessionId, null, function (err, content) {
+            if (!onComplete) {
+                return;
+            }
+
+            if (err) {
+                onComplete(err);
+                return;
+            }
+
+            getGame(gameId, sessionId, function (err, game) {
+                if (err) {
+                    onComplete(err);
+                    return;
+                }
+
+                onComplete(null, {
+                    updated: content.updated,
+                    newTiles: content.new_tiles,
+                    game: game
+                });
+            })
         });
     },
     pass: function (gameId, sessionId, onComplete) {
@@ -308,6 +343,33 @@ module.exports = {
     },
     chat: function (gameId, message, sessionId, onComplete) {
         simpleGet('game/' + gameId + '/chat/send/', { message: message }, sessionId, 'sent', onComplete);
+    },
+    inviteUser: function (user, rulesetId, boardType, sessionId, onComplete) {
+        var content = {
+            invitee: user,
+            ruleset: rulesetId,
+            board_type: boardType
+        };
+        simpleGet('invite/new/', content, sessionId, 'invitation', onComplete);
+    },
+    inviteRandom: function (rulesetId, boardType, sessionId, onComplete) {
+        var content = {
+            ruleset: rulesetId,
+            board_type: boardType
+        };
+        simpleGet('random_request/create/', content, sessionId, 'request', onComplete);
+    },
+    acceptInvite: function (inviteId, sessionId, onComplete) {
+        simpleGet('invite/' + inviteId + '/accept/', null, sessionId, 'id', onComplete);
+    },
+    rejectInvite: function (inviteId, sessionId, onComplete) {
+        simpleGet('invite/' + inviteId + '/reject/', null, sessionId, null, function (err) {
+            if (err) {
+                onComplete(err);
+                return;
+            }
+            onComplete(null);
+        });
     },
     loginWithId: loginWithId,
     login: function (user, password, onComplete) {
