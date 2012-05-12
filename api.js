@@ -209,6 +209,10 @@ function loginWithId (id, password, sessionId, onComplete) {
     });
 }
 
+function getGame (gameId, sessionId, onComplete) {
+    simpleGet('game/' + gameId + '/', null, sessionId, 'game', onComplete);
+}
+
 module.exports = {
     getGames: function (sessionId, onComplete) {
         simpleGet('user/games/', null, sessionId, 'games', onComplete);
@@ -219,9 +223,7 @@ module.exports = {
     getChat: function (gameId, sessionId, onComplete) {
         simpleGet('game/' + gameId + '/chat/', null, sessionId, 'messages', onComplete);
     },
-    getGame: function (gameId, sessionId, onComplete) {
-        simpleGet('game/' + gameId + '/', null, sessionId, 'game', onComplete);
-    },
+    getGame: getGame,
     getRuleset: function (rulesetId, sessionId, onComplete) {
         cachingGet('tile_points/' + rulesetId + '/', null, sessionId, 'tile_points', rulesets, rulesetId, onComplete);
     },
@@ -229,18 +231,7 @@ module.exports = {
         cachingGet('board/' + boardId + '/', null, sessionId, 'board', boards, boardId, onComplete);
     },
     getNotifications: function (sessionId, onComplete) {
-        if (!onComplete) {
-            return;
-        }
-
-        execute('user/notifications/', null, sessionId, function (err, res, result) {
-            if (err) {
-                onComplete(err);
-                return;
-            }
-            
-            onComplete(null, result.content.entries);
-        });
+        simpleGet('user/notifications/', null, sessionId, 'entries', onComplete);
     },
     move: function (gameId, rulesetId, move, words, socketId) {
         var content = {
@@ -314,6 +305,9 @@ module.exports = {
                 onComplete(null, game);
             });
         });
+    },
+    chat: function (gameId, message, sessionId, onComplete) {
+        simpleGet('game/' + gameId + '/chat/send/', { message: message }, sessionId, 'sent', onComplete);
     },
     loginWithId: loginWithId,
     login: function (user, password, onComplete) {
