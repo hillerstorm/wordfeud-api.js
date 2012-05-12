@@ -2,7 +2,7 @@
   "author": "Johan Hillerström <progr@mmer.nu> (https://github.com/hillerstorm)",
   "name": "wordfeud-api",
   "description": "A package for communicating with the Wordfeud-servers",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/hillerstorm/wordfeud-api.js",
   "repository": {
     "type": "git",
