@@ -206,7 +206,7 @@ function loginWithId (id, password, sessionId, onComplete) {
         }
 
         onComplete(null, {
-            sessionId: extractSessionId(response),
+            sessionId: sessionId || extractSessionId(response),
             user: {
                 id: result.content.id,
                 username: result.content.username,
@@ -404,13 +404,13 @@ module.exports = {
             content.username = user;
         }
 
-        execute('user/login/' + ext, content, sessionId, function (err, response, result) {
+        execute('user/login/' + ext, content, null, function (err, response, result) {
             if (err) {
                 onComplete(err);
                 return;
             }
 
-            loginWithId(result.content.id, password, sessionId, onComplete);
+            loginWithId(result.content.id, password, extractSessionId(response), onComplete);
         });
     }
 };
