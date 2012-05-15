@@ -221,6 +221,10 @@ function getGame (gameId, sessionId, onComplete) {
 }
 
 module.exports = {
+    init: function (brds, rlsts) {
+        boards = brds;
+        rulesets = rlsts;
+    },
     getGames: function (sessionId, onComplete) {
         simpleGet('user/games/', null, sessionId, 'games', onComplete);
     },
