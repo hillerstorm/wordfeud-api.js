@@ -250,7 +250,7 @@ module.exports = {
     getStatus: function (sessionId, onComplete) {
         simpleGet('user/status/', null, sessionId, null, onComplete);
     },
-    move: function (gameId, rulesetId, move, words, socketId, onComplete) {
+    move: function (gameId, rulesetId, move, words, sessionId, onComplete) {
         var content = {
             move: move,
             ruleset: rulesetId,
