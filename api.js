@@ -221,7 +221,7 @@ function getGame (gameId, sessionId, onComplete) {
 }
 
 module.exports = {
-    utils = {
+    utils: {
         init: function (brds, rlsts) {
             boards = brds;
             rulesets = rlsts;
