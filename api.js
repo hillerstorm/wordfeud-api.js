@@ -317,7 +317,7 @@ module.exports = {
                 return;
             }
 
-            getGame(socket, gameId, function (err, game) {
+            getGame(gameId, sessionId, function (err, game) {
                 if (err) {
                     onComplete(err);
                     return;
