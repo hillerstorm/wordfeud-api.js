@@ -1,18 +1,20 @@
 {
-  "author": "Johan Hillerström <progr@mmer.nu> (https://github.com/hillerstorm)",
+  "author": "Johan Hillerström <progr@mmer.nu>",
   "name": "wordfeud-api",
   "description": "A package for communicating with the Wordfeud-servers",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "homepage": "https://github.com/hillerstorm/wordfeud-api.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/hillerstorm/wordfeud-api.js.git"
   },
-  "main": "api",
-  "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
-  }
+  "scripts": {
+    "build": "babel api.js > index.js",
+    "prepublish": "npm run build"
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "babel": "^4.7.8"
+  },
+  "license": "MIT"
 }
